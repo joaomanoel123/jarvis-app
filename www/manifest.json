@@ -1,0 +1,48 @@
+{
+  "name": "J.A.R.V.I.S - Assistente Virtual Inteligente",
+  "short_name": "JARVIS",
+  "description": "Assistente virtual inteligente com IA, reconhecimento de voz e interface futurista. Criado por João Manoel.",
+  "start_url": "/jarvis/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#00AAFF",
+  "orientation": "portrait-primary",
+  "scope": "/jarvis/",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/jarvis/assets/img/logo.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/jarvis/assets/img/jarvis-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/jarvis/assets/img/jarvis-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "utilities"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Ativar Microfone",
+      "short_name": "Microfone",
+      "description": "Ativar reconhecimento de voz",
+      "url": "/jarvis/?action=mic",
+      "icons": [
+        {
+          "src": "/jarvis/assets/img/jarvis-icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Criar Ícone PNG para Jarvis</title>
+</head>
+<body>
+    <h1>Gerador de Ícone PNG para Jarvis</h1>
+    <canvas id="iconCanvas" width="512" height="512" style="border: 1px solid #ccc;"></canvas>
+    <br><br>
+    <button onclick="downloadIcon()">Download PNG 512x512</button>
+    <button onclick="downloadIcon192()">Download PNG 192x192</button>
+    
+    <script>
+        const canvas = document.getElementById('iconCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Criar ícone do Jarvis
+        function createJarvisIcon() {
+            // Fundo gradiente
+            const gradient = ctx.createRadialGradient(256, 256, 0, 256, 256, 256);
+            gradient.addColorStop(0, '#001122');
+            gradient.addColorStop(1, '#000000');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, 512, 512);
+            
+            // Círculo principal
+            ctx.strokeStyle = '#00AAFF';
+            ctx.lineWidth = 8;
+            ctx.beginPath();
+            ctx.arc(256, 256, 200, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // Círculo interno
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            ctx.arc(256, 256, 150, 0, 2 * Math.PI);
+            ctx.stroke();
+            
+            // Centro
+            ctx.fillStyle = '#00AAFF';
+            ctx.beginPath();
+            ctx.arc(256, 256, 20, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // Linhas decorativas
+            for (let i = 0; i < 8; i++) {
+                const angle = (i * Math.PI) / 4;
+                const x1 = 256 + Math.cos(angle) * 120;
+                const y1 = 256 + Math.sin(angle) * 120;
+                const x2 = 256 + Math.cos(angle) * 180;
+                const y2 = 256 + Math.sin(angle) * 180;
+                
+                ctx.strokeStyle = '#00AAFF';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+            }
+            
+            // Texto JARVIS
+            ctx.fillStyle = '#00AAFF';
+            ctx.font = 'bold 32px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('J.A.R.V.I.S', 256, 400);
+        }
+        
+        function downloadIcon() {
+            const link = document.createElement('a');
+            link.download = 'jarvis-icon-512.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        
+        function downloadIcon192() {
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = 192;
+            tempCanvas.height = 192;
+            const tempCtx = tempCanvas.getContext('2d');
+            tempCtx.drawImage(canvas, 0, 0, 512, 512, 0, 0, 192, 192);
+            
+            const link = document.createElement('a');
+            link.download = 'jarvis-icon-192.png';
+            link.href = tempCanvas.toDataURL();
+            link.click();
+        }
+        
+        // Criar o ícone
+        createJarvisIcon();
+    </script>
+</body>
+</html>
