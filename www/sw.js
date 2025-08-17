@@ -3,7 +3,16 @@
  * Fornece funcionalidades básicas de PWA
  */
 
-const CACHE_NAME = 'jarvis-v1.0.0';
+const CACHE_NAME = 'jarvis-cache-v1',
+const urlsToCache = [
+  '/',
+  '/index.html',
+  '/assets/js/jquery.lettering.min.js',
+  '/assets/js/jquery.textillate.js',
+  '/assets/js/jarvis-tts.js',
+  '/assets/js/main.js',  ],
+
+    
 const BASE_PATH = '/jarvis';
 
 // Arquivos essenciais para cache
