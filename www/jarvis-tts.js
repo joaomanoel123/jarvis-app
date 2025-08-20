@@ -1,301 +1,379 @@
-/**
- * Jarvis Text-to-Speech Module - Versão API Render
- * Integração com sua API do Render (Google TTS)
- */
 
-class JarvisTTS {
-    constructor() {
-        // URL da sua API no Render
-        this.apiUrl = 'https://jarvis-tdgt.onrender.com'; 
-        
-        this.isEnabled = true;
-        this.currentAudio = null;
-        
-        // Configurações padrão
-        this.settings = {
-            voice: {
-                languageCode: 'pt-BR',
-                name: 'pt-BR-Neural2-A', // Voz feminina Neural2
-                ssmlGender: 'FEMALE'
-            },
-            audioConfig: {
-                audioEncoding: 'MP3',
-                speakingRate: 1.0,
-                pitch: 0.0,
-                volumeGainDb: 0.0
-            },
-            autoSpeak: true
-        };
-        
-        this.init();
+$(document).ready(function () {
+
+    // ❌ Removido: eel.init()()
+
+    $('.text').textillate({
+        loop: true,
+        sync: true,
+        in: {
+            effect: "bounceIn",
+        },
+        out: {
+            effect: "bounceOut",
+        },
+    });
+
+    // Siri configuration
+    var container = document.getElementById("siri-container");
+    var sw = new SiriWave({
+        container: container,
+        width: container.clientWidth || 320,
+        height: 160,
+        style: "ios9",
+        amplitude: 1,
+        speed: 0.30,
+        autostart: true
+    });
+    
+    window.addEventListener('resize', function() {
+        sw.setWidth(container.clientWidth || 320);
+        sw.setHeight(160);
+    });
+
+    // Siri message animation
+    $('.siri-message').textillate({
+        loop: true,
+        sync: true,
+        in: {
+            effect: "fadeInUp",
+            sync: true,
+        },
+        out: {
+            effect: "fadeOutUp",
+            sync: true,
+        },
+    });
+
+    // Função para tocar som do assistente (substituindo eel.playAssistantSound)
+    function playAssistantSoundWeb() {
+        // Implementar som via Web Audio API ou HTML5 Audio se necessário
+        console.log('Som do assistente tocaria aqui');
+        // Exemplo: new Audio('assets/sounds/assistant.mp3').play();
     }
 
-    init() {
-        console.log('🗣️ Inicializando Jarvis TTS com API Render...');
-        
-        // Carregar configurações salvas
-        this.loadSettings();
-        
-        // Testar conexão com a API
-        this.testConnection();
-        
-        // Adicionar controles de TTS à interface
-        this.addTTSControls();
-        
-        console.log('✅ Jarvis TTS (Render API) inicializado com sucesso');
-    }
+    // mic button click event
+    $("#MicBtn").click(function () { 
+        playAssistantSoundWeb(); // ✅ Substituindo eel.playAssistantSound()
+        $("#Oval").attr("hidden", true);
+        $("#SiriWave").attr("hidden", false);
+        // ❌ Removido: eel.allCommands()() - será tratado via API remota
+    });
 
-    async testConnection() {
-        try {
-            // Fazer um teste simples com a API
-            const response = await fetch(this.apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    text: 'teste',
-                    voice: this.settings.voice,
-                    audioConfig: this.settings.audioConfig
-                })
-            });
+    function doc_keyUp(e) {
+        // this would test for whichever key is 40 (down arrow) and the ctrl key at the same time
+        if (e.key === 'j' && e.metaKey) {
+            playAssistantSoundWeb(); // ✅ Substituindo eel.playAssistantSound()
+            $("#Oval").attr("hidden", true);
+            $("#SiriWave").attr("hidden", false);
+            // ❌ Removido: eel.allCommands()() - será tratado via API remota
+        }
+    }
+    document.addEventListener('keyup', doc_keyUp, false);
+
+    // to play assistant 
+    function PlayAssistant(message) {
+        if (message != "") {
+            $("#Oval").attr("hidden", true);
+            $("#SiriWave").attr("hidden", false);
             
-            if (response.ok) {
-                console.log('✅ Conexão com API Render OK');
+            // Envia para backend API (Render ou outro)
+            const apiUrl = window.FRONT_API_URL || localStorage.getItem('FRONT_API_URL');
+            if (apiUrl) {
+                // Requisição para comando com configuração de voz
+                fetch(apiUrl.replace(/\/$/, '') + '/command', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        message,
+                        voice_config: {
+                            languageCode: "pt-BR",
+                            name: "pt-BR-Neural2-A",
+                            ssmlGender: "FEMALE"
+                        },
+                        audio_config: {
+                            audioEncoding: "MP3",
+                            speakingRate: 1.0,
+                            pitch: 0.0,
+                            volumeGainDb: 0.0
+                        }
+                    })
+                }).then(r => r.json()).then(data => {
+                    if (data && data.reply) {
+                        // Exibe resposta na tela
+                        displayAssistantResponse(data.reply);
+                        
+                        // Reproduz áudio se retornado
+                        if (data.audio_base64) {
+                            playAudioFromBase64(data.audio_base64);
+                        } else if (data.audio_url) {
+                            playAudioFromUrl(data.audio_url);
+                        }
+                    }
+                }).catch(err => {
+                    console.error('Erro na API:', err);
+                    displayAssistantResponse('Desculpe, ocorreu um erro. Tente novamente.');
+                });
             } else {
-                console.warn(`⚠️ API Render respondeu com status: ${response.status}`);
+                // ❌ Removido: eel.allCommands(message);
+                displayAssistantResponse('Configure a URL da API nas configurações.');
             }
-        } catch (error) {
-            console.error('❌ Erro ao conectar com API Render:', error);
-        }
-    }
-
-    // Esta função resolve o erro que você estava tendo
-    autoSelectVoice() {
-        // Com API do Render, sempre temos vozes disponíveis
-        const availableVoices = [
-            { languageCode: 'pt-BR', name: 'pt-BR-Neural2-A', ssmlGender: 'FEMALE' },
-            { languageCode: 'pt-BR', name: 'pt-BR-Neural2-B', ssmlGender: 'MALE' },
-            { languageCode: 'pt-BR', name: 'pt-BR-Standard-A', ssmlGender: 'FEMALE' },
-            { languageCode: 'pt-BR', name: 'pt-BR-Standard-B', ssmlGender: 'MALE' },
-            { languageCode: 'pt-BR', name: 'pt-BR-Wavenet-A', ssmlGender: 'FEMALE' },
-            { languageCode: 'pt-BR', name: 'pt-BR-Wavenet-B', ssmlGender: 'MALE' }
-        ];
-        
-        // Priorizar Neural2 (melhor qualidade)
-        const selectedVoice = availableVoices.find(v => v.name.includes('Neural2')) || availableVoices[0];
-        
-        this.settings.voice = selectedVoice;
-        console.log(`🎯 Voz selecionada: ${selectedVoice.name}`);
-        
-        return selectedVoice;
-    }
-
-    async speak(text, customVoice = null) {
-        if (!this.isEnabled || !text) {
-            return Promise.resolve();
-        }
-
-        // Limpar texto
-        const cleanText = this.cleanText(text);
-        if (!cleanText) {
-            return Promise.resolve();
-        }
-
-        console.log('🗣️ Enviando para API Render:', cleanText);
-
-        try {
-            // Parar áudio anterior se estiver tocando
-            this.stop();
-
-            const voice = customVoice || this.settings.voice;
             
-            const response = await fetch(this.apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    text: cleanText,
-                    voice: voice,
-                    audioConfig: this.settings.audioConfig
-                })
-            });
-
-            if (!response.ok) {
-                throw new Error(`API Error: ${response.status} - ${response.statusText}`);
-            }
-
-            const data = await response.json();
-            
-            if (!data.audioContent) {
-                throw new Error('Resposta da API não contém audioContent');
-            }
-
-            // Reproduzir o áudio
-            return this.playAudio(data.audioContent);
-
-        } catch (error) {
-            console.error('❌ Erro na síntese de voz:', error);
-            throw error;
+            $("#chatbox").val("");
+            $("#MicBtn").attr('hidden', false);
+            $("#SendBtn").attr('hidden', true);
         }
     }
 
-    playAudio(audioContent) {
-        return new Promise((resolve, reject) => {
-            try {
-                // Criar elemento de áudio com o base64
-                this.currentAudio = new Audio(`data:audio/mp3;base64,${audioContent}`);
-                
-                this.currentAudio.onended = () => {
-                    console.log('✅ Reprodução concluída');
-                    this.currentAudio = null;
-                    resolve();
-                };
-                
-                this.currentAudio.onerror = (error) => {
-                    console.error('❌ Erro na reprodução:', error);
-                    this.currentAudio = null;
-                    reject(error);
-                };
-                
-                // Iniciar reprodução
-                this.currentAudio.play().then(() => {
-                    console.log('🎤 Reproduzindo áudio...');
-                }).catch(reject);
-                
-            } catch (error) {
-                console.error('❌ Erro ao criar áudio:', error);
-                reject(error);
-            }
+    // Função para reproduzir áudio do Google TTS (Base64)
+    function playAudioFromBase64(audioBase64) {
+        const audio = new Audio();
+        
+        // Converte base64 para URL
+        const audioBlob = base64ToBlob(audioBase64, 'audio/mp3');
+        const audioUrl = URL.createObjectURL(audioBlob);
+        
+        audio.src = audioUrl;
+        audio.preload = 'metadata';
+        
+        audio.play().then(() => {
+            console.log('Reproduzindo áudio do Google TTS');
+        }).catch(err => {
+            console.log('Erro ao reproduzir áudio:', err);
+        });
+        
+        // Limpa URL quando terminar
+        audio.addEventListener('ended', () => {
+            URL.revokeObjectURL(audioUrl);
+            setTimeout(() => {
+                $("#Oval").attr("hidden", false);
+                $("#SiriWave").attr("hidden", true);
+            }, 1000);
+        });
+        
+        audio.addEventListener('error', (e) => {
+            console.log('Erro no áudio:', e);
+            URL.revokeObjectURL(audioUrl);
         });
     }
-
-    cleanText(text) {
-        if (!text) return '';
+    
+    // Função para reproduzir áudio via URL direta
+    function playAudioFromUrl(audioUrl) {
+        const audio = new Audio(audioUrl);
         
-        return text
-            // Remover emojis comuns
-            .replace(/[\u{1F600}-\u{1F64F}]/gu, '') // Emoticons
-            .replace(/[\u{1F300}-\u{1F5FF}]/gu, '') // Misc Symbols
-            .replace(/[\u{1F680}-\u{1F6FF}]/gu, '') // Transport
-            .replace(/[\u{1F1E0}-\u{1F1FF}]/gu, '') // Flags
-            .replace(/[\u{2600}-\u{26FF}]/gu, '')   // Misc symbols
-            .replace(/[\u{2700}-\u{27BF}]/gu, '')   // Dingbats
-            // Remover símbolos específicos
-            .replace(/[🤖🗣️📱✅❌⚠️🔄🔍🎯📡📝🌊🔙💬🚫⏱️🔌🎆💾⚙️🎤]/g, '')
-            // Limpar múltiplos espaços
-            .replace(/\s+/g, ' ')
-            .replace(/\n/g, ' ')
-            .trim();
+        audio.play().then(() => {
+            console.log('Reproduzindo áudio via URL');
+        }).catch(err => {
+            console.log('Erro ao reproduzir áudio:', err);
+        });
+        
+        audio.addEventListener('ended', () => {
+            setTimeout(() => {
+                $("#Oval").attr("hidden", false);
+                $("#SiriWave").attr("hidden", true);
+            }, 1000);
+        });
+    }
+    
+    // Função auxiliar para converter base64 para blob
+    function base64ToBlob(base64, mimeType) {
+        const byteCharacters = atob(base64);
+        const byteNumbers = new Array(byteCharacters.length);
+        
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        
+        const byteArray = new Uint8Array(byteNumbers);
+        return new Blob([byteArray], { type: mimeType });
     }
 
-    stop() {
-        if (this.currentAudio) {
-            this.currentAudio.pause();
-            this.currentAudio = null;
-            console.log('⏹️ Reprodução interrompida');
+    // Função para lidar com ações específicas do Jarvis
+    function handleJarvisAction(action, params) {
+        console.log('Ação do Jarvis:', action, params);
+        
+        switch(action) {
+            case 'open_website':
+                if (params && params.url) {
+                    window.open(params.url, '_blank');
+                }
+                break;
+                
+            case 'search_web':
+                if (params && params.query) {
+                    window.open(`https://www.google.com/search?q=${encodeURIComponent(params.query)}`, '_blank');
+                }
+                break;
+                
+            case 'play_music':
+                if (params && params.song) {
+                    window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(params.song)}`, '_blank');
+                }
+                break;
+                
+            case 'weather':
+                // Já processado pelo Groq, apenas exibe
+                break;
+                
+            case 'time':
+                // Já processado pelo Groq, apenas exibe
+                break;
+                
+            case 'news':
+                // Pode abrir portal de notícias se necessário
+                break;
+                
+            default:
+                console.log('Ação não reconhecida:', action);
         }
     }
 
-    toggle() {
-        this.isEnabled = !this.isEnabled;
-        this.saveSettings();
-        console.log(`🔊 TTS ${this.isEnabled ? 'ativado' : 'desativado'}`);
-        
-        if (!this.isEnabled) {
-            this.stop();
-        }
-        
-        this.updateTTSButton();
-    }
-
-    // Função pública para ser chamada pelo main.js
-    speakResponse(text) {
-        if (this.settings.autoSpeak && this.isEnabled) {
-            this.speak(text);
-        }
-    }
-
-    loadSettings() {
-        try {
-            const saved = localStorage.getItem('jarvis_tts_settings');
-            if (saved) {
-                const parsedSettings = JSON.parse(saved);
-                this.settings = { ...this.settings, ...parsedSettings };
-                console.log('⚙️ Configurações TTS carregadas');
+    // Função para configurações avançadas do Jarvis
+    function configureJarvisSettings() {
+        const settings = {
+            voice: {
+                language: localStorage.getItem('jarvis_language') || 'pt-BR',
+                voice_name: localStorage.getItem('jarvis_voice') || 'pt-BR-Neural2-A',
+                speed: parseFloat(localStorage.getItem('jarvis_speed')) || 1.0,
+                pitch: parseFloat(localStorage.getItem('jarvis_pitch')) || 0.0
+            },
+            groq: {
+                model: localStorage.getItem('jarvis_model') || 'mixtral-8x7b-32768',
+                temperature: parseFloat(localStorage.getItem('jarvis_temperature')) || 0.7
             }
-        } catch (error) {
-            console.warn('⚠️ Erro ao carregar configurações TTS:', error);
+        };
+        
+        return settings;
+    }
+
+    // Função para exibir resposta do assistente
+    function displayAssistantResponse(response) {
+        // Atualiza texto na tela
+        $('.siri-message').text(response);
+        
+        // Não define timeout aqui - será controlado pelo evento 'ended' do áudio
+    }
+
+    // toggle function to hide and display mic and send button 
+    function ShowHideButton(message) {
+        if (message.length == 0) {
+            $("#MicBtn").attr('hidden', false);
+            $("#SendBtn").attr('hidden', true);
+        } else {
+            $("#MicBtn").attr('hidden', true);
+            $("#SendBtn").attr('hidden', false);
         }
     }
 
-    saveSettings() {
-        try {
-            localStorage.setItem('jarvis_tts_settings', JSON.stringify(this.settings));
-            console.log('💾 Configurações TTS salvas');
-        } catch (error) {
-            console.warn('⚠️ Erro ao salvar configurações TTS:', error);
-        }
-    }
+    // key up event handler on text box
+    $("#chatbox").keyup(function () {
+        let message = $("#chatbox").val();
+        ShowHideButton(message);
+    });
+    
+    // send button event handler
+    $("#SendBtn").click(function () {
+        let message = $("#chatbox").val();
+        PlayAssistant(message);
+    });
 
-    addTTSControls() {
-        // Adicionar botão de toggle TTS
-        const textInputDiv = document.getElementById('TextInput');
-        if (textInputDiv) {
-            const ttsBtn = document.createElement('button');
-            ttsBtn.id = 'TTSBtn';
-            ttsBtn.className = 'glow-on-hover';
-            ttsBtn.innerHTML = '<i class="bi bi-volume-up"></i>';
-            ttsBtn.title = 'Toggle Text-to-Speech';
-            ttsBtn.onclick = () => this.toggle();
+    // settings button: configure backend URL and Jarvis settings
+    $("#SettingsBtn").click(function () {
+        const currentUrl = localStorage.getItem('FRONT_API_URL') || '';
+        const currentVoice = localStorage.getItem('jarvis_voice') || 'pt-BR-Neural2-A';
+        const currentSpeed = localStorage.getItem('jarvis_speed') || '1.0';
+        
+        const settingsHtml = `
+            <div style="font-family: Arial; line-height: 1.6;">
+                <h3>Configurações do Jarvis</h3>
+                <label>URL da API (Render):</label><br>
+                <input type="text" id="api-url" value="${currentUrl}" style="width: 300px; margin: 5px 0;"><br><br>
+                
+                <label>Voz do Google TTS:</label><br>
+                <select id="voice-select" style="width: 200px; margin: 5px 0;">
+                    <option value="pt-BR-Neural2-A" ${currentVoice === 'pt-BR-Neural2-A' ? 'selected' : ''}>Neural2-A (Feminina)</option>
+                    <option value="pt-BR-Neural2-B" ${currentVoice === 'pt-BR-Neural2-B' ? 'selected' : ''}>Neural2-B (Masculina)</option>
+                    <option value="pt-BR-Neural2-C" ${currentVoice === 'pt-BR-Neural2-C' ? 'selected' : ''}>Neural2-C (Feminina)</option>
+                </select><br><br>
+                
+                <label>Velocidade da Fala:</label><br>
+                <input type="range" id="speed-range" min="0.5" max="2.0" step="0.1" value="${currentSpeed}" style="margin: 5px 0;">
+                <span id="speed-value">${currentSpeed}</span><br><br>
+                
+                <button onclick="saveJarvisSettings()">Salvar</button>
+                <button onclick="testJarvisVoice()">Testar Voz</button>
+            </div>
+        `;
+        
+        // Cria modal simples (você pode melhorar com CSS)
+        const modal = document.createElement('div');
+        modal.innerHTML = settingsHtml;
+        modal.style.cssText = `
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: white; padding: 20px; border: 2px solid #333;
+            border-radius: 10px; z-index: 1000; box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        `;
+        
+        // Overlay
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 999;
+        `;
+        
+        overlay.onclick = () => {
+            document.body.removeChild(modal);
+            document.body.removeChild(overlay);
+        };
+        
+        document.body.appendChild(overlay);
+        document.body.appendChild(modal);
+        
+        // Update speed display
+        modal.querySelector('#speed-range').oninput = function() {
+            modal.querySelector('#speed-value').textContent = this.value;
+        };
+        
+        // Global functions for modal
+        window.saveJarvisSettings = () => {
+            const url = modal.querySelector('#api-url').value.trim();
+            const voice = modal.querySelector('#voice-select').value;
+            const speed = modal.querySelector('#speed-range').value;
             
-            textInputDiv.appendChild(ttsBtn);
-            this.updateTTSButton();
-        }
-    }
-
-    updateTTSButton() {
-        const ttsBtn = document.getElementById('TTSBtn');
-        if (ttsBtn) {
-            const icon = ttsBtn.querySelector('i');
-            if (this.isEnabled) {
-                icon.className = 'bi bi-volume-up';
-                ttsBtn.style.opacity = '1';
-                ttsBtn.title = 'TTS Ativado - Clique para desativar';
+            if (url) {
+                localStorage.setItem('FRONT_API_URL', url);
             } else {
-                icon.className = 'bi bi-volume-mute';
-                ttsBtn.style.opacity = '0.5';
-                ttsBtn.title = 'TTS Desativado - Clique para ativar';
+                localStorage.removeItem('FRONT_API_URL');
             }
-        }
-    }
-
-    async testTTS() {
-        const testPhrases = [
-            'Olá! Eu sou o Jarvis, seu assistente virtual.',
-            'Sistema de voz funcionando perfeitamente.',
-            'Como posso ajudá-lo hoje?',
-            'Todos os sistemas operacionais.'
-        ];
+            
+            localStorage.setItem('jarvis_voice', voice);
+            localStorage.setItem('jarvis_speed', speed);
+            
+            alert('Configurações salvas!');
+            document.body.removeChild(modal);
+            document.body.removeChild(overlay);
+        };
         
-        const randomPhrase = testPhrases[Math.floor(Math.random() * testPhrases.length)];
-        await this.speak(randomPhrase);
-    }
-}
+        window.testJarvisVoice = () => {
+            const voice = modal.querySelector('#voice-select').value;
+            const speed = modal.querySelector('#speed-range').value;
+            
+            // Testa a voz com as configurações atuais
+            const testMessage = "Olá, esta é a voz do Jarvis configurada.";
+            displayAssistantResponse(testMessage);
+            
+            // Simula teste de TTS (você pode implementar endpoint específico)
+            console.log(`Testando voz: ${voice} com velocidade: ${speed}`);
+        };
+    });
 
-// Inicializar TTS quando o documento estiver pronto
-let jarvisTTS = null;
+    // enter press event handler on chat box
+    $("#chatbox").keypress(function (e) {
+        key = e.which;
+        if (key == 13) {
+            let message = $("#chatbox").val();
+            PlayAssistant(message);
+        }
+    });
 
-$(document).ready(function() {
-    setTimeout(() => {
-        jarvisTTS = new JarvisTTS();
-        window.jarvisTTS = jarvisTTS;
-        console.log('🎤 Jarvis TTS (Render API) integrado com sucesso!');
-    }, 1000);
 });
-
-// Exportar para uso em outros scripts
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = JarvisTTS;
-}
