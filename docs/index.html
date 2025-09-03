@@ -3,71 +3,110 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>J.A.R.V.I.S - Assistente Virtual Inteligente | João Manoel</title>
-    <meta name="description" content="Assistente virtual inteligente com IA, reconhecimento de voz e interface futurista. Criado por João Manoel com Groq API e tecnologias modernas.">
-    <meta name="keywords" content="jarvis, assistente virtual, ia, inteligencia artificial, joao manoel, groq, chatbot, português">
-    <meta name="author" content="João Manoel">
-    
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://joaomanoel123.github.io/jarvis">
-    <meta property="og:title" content="J.A.R.V.I.S - Assistente Virtual Inteligente">
-    <meta property="og:description" content="Assistente virtual com IA, interface futurista e respostas em português brasileiro.">
-    <meta property="og:image" content="https://joaomanoel123.github.io/jarvis/assets/img/logo.ico">
-    
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://joaomanoel123.github.io/jarvis">
-    <meta property="twitter:title" content="J.A.R.V.I.S - Assistente Virtual Inteligente">
-    <meta property="twitter:description" content="Assistente virtual com IA, interface futurista e respostas em português brasileiro.">
-    <meta property="twitter:image" content="https://joaomanoel123.github.io/jarvis/assets/img/logo.ico">
-    
-    <!-- PWA -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#00AAFF">
-    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="JARVIS">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="JARVIS">
-    <meta name="application-name" content="JARVIS">
-    <meta name="msapplication-TileColor" content="#00AAFF">
-    <meta name="msapplication-config" content="/jarvis/browserconfig.xml">
-    <meta name="google" content="notranslate">
-    <meta http-equiv="Content-Security-Policy" 
-      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://ajax.googleapis.com https://cdn.jsdelivr.net https://unpkg.com https://code.jquery.com https://translate.googleapis.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.gstatic.com; connect-src 'self' https://jarvis-api-joao-manoel.onrender.com https://jarvis-tdgt.onrender.com https://texttospeech.googleapis.com; img-src 'self' data: https: blob:; media-src 'self' blob: data:; font-src 'self' https://cdn.jsdelivr.net; frame-src 'self';"> 
-
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    
+    <title>J.A.R.V.I.S - Assistente Virtual Inteligente</title>
+    <meta name="description" content="J.A.R.V.I.S - Seu assistente virtual inteligente com reconhecimento de voz e IA avançada">
+    <meta name="keywords" content="jarvis, assistente virtual, ia, inteligencia artificial, reconhecimento de voz">
+    
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
     <link rel="shortcut icon" href="assets/img/logo.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="assets/img/logo.ico">
+    
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="style.css" as="style">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" as="style">
+    
+    <!-- Bootstrap 5.3.2 (Latest) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
 
-    <!-- Bootsrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <!-- Bootsrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
-    <!-- Particle js -->
+    <!-- Modernizr for feature detection -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.min.js"
         type="text/javascript"></script>
 
-    <!-- Texllate  -->
-    <link rel="stylesheet" href="assets/vendore/texllate/animate.css">
+    <!-- Animate.css for Textillate -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
 
+    <!-- Main Styles -->
     <link rel="stylesheet" href="style.css">
+    
+    <!-- Performance optimizations -->
+    <style>
+        /* Critical CSS for faster loading */
+        body {
+            background-color: #000;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loading-screen.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+            }
+        }
+        
+        /* Touch optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            button, .btn {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+    </style>
 
 </head>
 
 <body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+            <p class="text-light mt-3">Inicializando J.A.R.V.I.S...</p>
+        </div>
+    </div>
 
-    <div class="container">
+    <div class="container-fluid px-0">
 
         <section id="Start">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
-                        <div>
+            <div class="row g-0">
+                <div class="col-12">
+                    <div class="d-flex justify-content-center align-items-center min-vh-100">
+                        <div class="text-center">
                             <div id="Loader" class="svg-frame mb-4">
                                 <!--base-->
                                 <svg style="--i:0;">
@@ -300,7 +339,7 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-center align-items-center">
-                        <h1 id="WishMessage" class="text-center text-light text mt-4 siri-message">Initializing...</h1>
+                        <h1 id="WishMessage" class="text-center text-light mt-4 siri-message">Inicializando...</h1>
                     </div>
                 </div>
 
@@ -309,10 +348,10 @@
 
         <section id="Oval" class="mb-4" hidden>
 
-            <div class="row">
-                <div class="col-md-1"></div>
-                <div class="col-md-10">
-                    <div class="d-flex justify-content-center align-items-center" style="height: 80vh;">
+            <div class="row g-0">
+                <div class="col-lg-1 col-md-1"></div>
+                <div class="col-lg-10 col-md-10 col-12">
+                    <div class="d-flex justify-content-center align-items-center min-vh-100">
 
                         <canvas id="canvasOne" width="700" height="420" style="position: absolute;"></canvas>
 
@@ -327,39 +366,39 @@
                         </div>
 
                     </div>
-                    <h5 class="text-light text text-center">Ask me anything</h5>
+                    <h5 class="text-light text-center">Pergunte-me qualquer coisa</h5>
 
-                    <div class="col-md-12 mt-4 pt-4">
+                    <div class="col-12 mt-4 pt-4">
                         <div class="text-center">
-                            <div id="TextInput" class="d-flex">
+                            <div id="TextInput" class="d-flex flex-wrap justify-content-center">
 
                                 <input type="text" class="input-field" name="chatbox" id="chatbox"
-                                    placeholder="type here ... ">
-                                <button id="SendBtn" class="glow-on-hover" hidden><i class="bi bi-send"></i></button>
-                                <button id="MicBtn" class="glow-on-hover"><i class="bi bi-mic"></i></button>
+                                    placeholder="Digite aqui..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                                <button id="SendBtn" class="glow-on-hover" hidden aria-label="Enviar mensagem"><i class="bi bi-send"></i></button>
+                                <button id="MicBtn" class="glow-on-hover" aria-label="Ativar microfone"><i class="bi bi-mic"></i></button>
                                 <button id="ChatBtn" class="glow-on-hover" data-bs-toggle="offcanvas"
-                                    data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"><i
+                                    data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling" aria-label="Abrir chat"><i
                                         class="bi bi-chat-dots"></i></button>
-                                <button id="SettingsBtn" class="glow-on-hover"><i class="bi bi-gear"></i></button>
+                                <button id="SettingsBtn" class="glow-on-hover" aria-label="Configurações"><i class="bi bi-gear"></i></button>
 
                             </div>
                         </div>
                     </div>
 
                 </div>
-                <div class="col-md-1"></div>
+                <div class="col-lg-1 col-md-1"></div>
             </div>
 
         </section>
 
         <section id="SiriWave" class="mb-4" hidden>
 
-            <div class="container">
+            <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-12">
-                        <div class="d-flex justify-content-center align-items-center" style="height: 100vh;">
-                            <div class="">
-                                <p class="text-start text-light mb-4 siri-message" style="font-size: 28px;">Hello, I am
+                    <div class="col-12">
+                        <div class="d-flex justify-content-center align-items-center min-vh-100">
+                            <div class="text-center">
+                                <p class="text-start text-light mb-4 siri-message" style="font-size: clamp(1.2rem, 4vw, 2rem);">Olá, eu sou o
                                     J.A.R.V.I.S</p>
                                 <div id="siri-container"></div>
                             </div>
@@ -372,60 +411,123 @@
         </section>
     </div>
 
+    <!-- Chat Offcanvas -->
     <div class="offcanvas offcanvas-start chat-canvas" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1"
         id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
         <div class="offcanvas-header">
-            <h5 class="offcanvas-title text-white" id="offcanvasScrollingLabel">Chats</h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            <h5 class="offcanvas-title text-white" id="offcanvasScrollingLabel">Conversas</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Fechar"></button>
         </div>
         <div id="chat-canvas-body" class="offcanvas-body">
-            <!-- Chatting code here -->
-
+            <!-- Chat content here -->
         </div>
     </div>
-    
 
-
-    <!--Jquery  -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <!-- Scripts -->
+    <!-- jQuery (dependência para Bootstrap e UI) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
     <!-- Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
 
-    <!-- Removed duplicate/legacy jQuery and unused scripts for GitHub Pages -->
-
-    <!-- Siri wave -->
+    <!-- Bibliotecas de Animação -->
     <script src="https://unpkg.com/siriwave/dist/siriwave.umd.min.js"></script>
-
-    <!-- Texllate js -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="assets/js/jquery.lettering.min.js"></script>
-    <script src="assets/js/jquery.textillate.js"></script>
-    <script src="assets/js/jarvis-tts.js"></script>
-    <script src="assets/js/main.js"></script>
-
-
-    <!-- lottie files -->
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 
-    <!-- Jarvis Voice System -->
-    <script src="jarvis-tts.js"></script>
-    <script src="jarvis-google-tts.js"></script>
-    <script src="jarvis-speech-recognition.js"></script>
+    <!-- Ponto de Entrada da Aplicação JARVIS (Modular) -->
+    <script type="module" src="main.js"></script>
 
-    <script src="eel.js"></script>
+    <!-- Service Worker Registration -->
     <script>
-        // Detectar se está no GitHub Pages e carregar script apropriado
-        if (window.location.hostname.includes('github.io')) {
-            document.write('<script src="main-github-pages.js"><\/script>');
-        } else {
-            document.write('<script src="main.js"><\/script>');
+        // Register service worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(function(err) {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+
+        // Hide loading screen after page load
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const loadingScreen = document.getElementById('loadingScreen');
+                if (loadingScreen) {
+                    loadingScreen.classList.add('fade-out');
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }
+            }, 1500);
+        });
+
+        // Mobile optimizations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Prevent zoom on input focus (iOS)
+            const inputs = document.querySelectorAll('input[type="text"]');
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    if (window.innerWidth < 768) {
+                        document.querySelector('meta[name="viewport"]').setAttribute('content', 
+                            'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+                    }
+                });
+                
+                input.addEventListener('blur', function() {
+                    if (window.innerWidth < 768) {
+                        document.querySelector('meta[name="viewport"]').setAttribute('content', 
+                            'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover');
+                    }
+                });
+            });
+
+            // Touch feedback for buttons
+            const buttons = document.querySelectorAll('.glow-on-hover');
+            buttons.forEach(button => {
+                button.addEventListener('touchstart', function() {
+                    this.style.transform = 'scale(0.95)';
+                });
+                
+                button.addEventListener('touchend', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+
+            // Optimize animations for mobile
+            if (window.innerWidth < 768) {
+                const svgs = document.querySelectorAll('svg');
+                svgs.forEach(svg => {
+                    svg.style.animationDuration = '8s'; // Slower animations on mobile
+                });
+            }
+
+            // Handle orientation change
+            window.addEventListener('orientationchange', function() {
+                setTimeout(function() {
+                    window.scrollTo(0, 0);
+                }, 100);
+            });
+        });
+
+        // Performance monitoring
+        if (window.performance && window.performance.mark) {
+            window.performance.mark('jarvis-start');
+            
+            window.addEventListener('load', function() {
+                window.performance.mark('jarvis-loaded');
+                window.performance.measure('jarvis-load-time', 'jarvis-start', 'jarvis-loaded');
+                
+                const measure = window.performance.getEntriesByName('jarvis-load-time')[0];
+                console.log('J.A.R.V.I.S load time:', measure.duration + 'ms');
+            });
         }
     </script>
-    <script src="controller.js"></script>
-
 
 </body>
 
