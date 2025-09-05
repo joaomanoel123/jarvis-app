@@ -7,10 +7,10 @@ const CACHE_NAME = 'jarvis-cache-v1',
 const urlsToCache = [
   '/',
   '/index.html',
-  '/assets/js/jquery.lettering.min.js',
-  '/assets/js/jquery.textillate.js',
-  '/assets/js/jarvis-tts.js',
-  '/assets/js/main.js',  ],
+  'js/jquery.lettering.min.js',
+  'js/jquery.textillate.js',
+  'js/jarvis-tts.js',
+  'js/main.js',  ],
 
     
 const BASE_PATH = '/jarvis';
