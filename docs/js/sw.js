@@ -3,14 +3,14 @@
  * Fornece funcionalidades básicas de PWA
  */
 
-const CACHE_NAME = 'jarvis-cache-v1',
+const CACHE_NAME = 'jarvis-cache-v1'
 const urlsToCache = [
   '/',
   '/index.html',
   'js/jquery.lettering.min.js',
   'js/jquery.textillate.js',
   'js/jarvis-tts.js',
-  'js/main.js',  ],
+  '/main.js',  ]
 
     
 const BASE_PATH = '/jarvis';
