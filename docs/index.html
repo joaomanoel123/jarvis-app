@@ -425,21 +425,20 @@
 
     <!-- Scripts -->
     <!-- jQuery (dependência para Bootstrap e UI) -->
-    <script src="js/jquery.min.js"></script>
+     <!-- 1. jQuery -->
+      <script src="js/jquery.min.js"></script>
 
-    <!-- Bootstrap -->
-    <script src="js/bootstrap.bundle.min.js"
-        crossorigin="anonymous"></script>
-    
-     <script src="js/bootstrap.bundle.min.css"
-        crossorigin="anonymous"></script>
+      <!-- 2. Plugins que dependem do jQuery -->
+          <script src="js/jquery.lettering.js"></script>
+          <script src="js/jquery.fittext.js"></script>
+          <script src="js/jquery.textillate.js"></script>
 
-    <!-- Bibliotecas de Animação -->
-    <script src="https://unpkg.com/siriwave/dist/siriwave.umd.min.js"></script>
-    <script src="./docs/js/lottie-player.js"></script>
-
-    <!-- Ponto de Entrada da Aplicação JARVIS (Modular) -->
-    <script type="module" src="js/main.js"></script>
+      <!-- 3. Outras libs -->
+           <script src="js/particles.min.js"></script>
+           <script src="js/siriwave.min.js"></script>
+ 
+  <!-- 4. Seu script principal (por último SEMPRE) -->
+  <script src="js/main.js"></script>
 
     <!-- Service Worker Registration -->
     <script>
